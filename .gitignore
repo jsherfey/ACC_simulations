@@ -1,0 +1,11 @@
+*~
+solve_ode_*.m
+solve_ode_*_mex.*
+params.mat
+solve/
+solve/*
+solve/**
+data/
+studies/
+study_*
+study_*/
