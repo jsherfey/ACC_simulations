@@ -1,0 +1,7 @@
+gpas = [0.024]
+epas = [-66]
+ 
+leak(IN) = gpas.*(IN-epas)
+ 
+current => -leak(IN)
+ 

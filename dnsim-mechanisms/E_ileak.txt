@@ -1,0 +1,7 @@
+g_l = [0.54]
+E_l = [-80]
+ 
+IL(V) = g_l.*(V-E_l)
+ 
+current => -IL(V)
+ 

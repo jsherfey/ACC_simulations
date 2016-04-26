@@ -1,0 +1,19 @@
+wbgSYN = [0.6]
+wbESYN = [-80]
+wbtauRx = [0.083]
+wbtauDx = [12]
+theta = [0]
+IC = [0.1]
+IC_noise = [0.1]
+wbPrSYN = [1]
+ 
+mask = rand(Npre,Npost)<=wbPrSYN
+
+F(V) = 1./(1+exp(-(V-theta)/2))
+ISYN(V,s) = (wbgSYN/(wbPrSYN*Npre)).*s.*(V-wbESYN)
+ 
+s' = (F(Vpre)./wbtauRx).*(1-s)-s/wbtauDx;
+s(0) = IC+IC_noise.*rand(Npre,1)
+ 
+current => -ISYN(Vpost,s)
+ 

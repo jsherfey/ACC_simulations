@@ -1,0 +1,27 @@
+gcatbar = [0.0017]
+zetam = [-3]
+zetah = [5.2]
+vhalfm = [-36]
+vhalfh = [-68]
+tm0 = [1.5]
+th0 = [10]
+celsius = [34]
+eca = [126.1]
+m_IC = [0]
+h_IC = [1]
+IC_noise = [0]
+ 
+alpm(v) = exp(1e-3*zetam*(v-vhalfm)*9.648e4/(8.315*(273.16+celsius)))
+alph(v) = exp(1e-3*zetah*(v-vhalfh)*9.648e4/(8.315*(273.16+celsius)))
+minf(v) = 1./(1+alpm(v))
+hinf(v) = 1./(1+alph(v))
+ica(v,cai,m,h) = gcatbar*m.^2.*h.*(v-eca)
+ 
+m' = (minf(IN)-m)/tm0;
+m(0) = m_IC+IC_noise.*rand(Npop,1)
+h' = (hinf(IN)-h)/th0;
+h(0) = h_IC+IC_noise.*rand(Npop,1)
+ 
+current => -ica(IN,cai,m,h)
+ica => ica(IN,cai,m,h)
+ 

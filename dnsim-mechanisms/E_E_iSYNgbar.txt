@@ -1,0 +1,23 @@
+g_SYN = [0.1]
+E_SYN = [0]
+tauDx = [2]
+tauRx = [0.083]
+span = [0.1]
+IC = [0.1]
+IC_noise = [0]
+ 
+Nmax = max(Npre,Npost)
+Xpre = linspace(1,Nmax,Npre)'*ones(1,Npost)
+Xpost = (linspace(1,Nmax,Npost)'*ones(1,Npre))'
+fanout = (span*Nmax)/2
+kernel = exp(-(Xpre-Xpost).^2/fanout^2)
+mask = abs(Xpre-Xpost)<=fanout
+gbar = g_SYN / mean(sum(mask,1))
+
+ISYN(V,s) = (gbar.*(s'*(mask.*kernel))'.*(V-E_SYN))
+ 
+sSYNpre' = -sSYNpre./tauDx + ((1-sSYNpre)/tauRx).*(1+tanh(Vpre/10));
+sSYNpre(0) = IC+IC_noise.*rand(Npre,1)
+ 
+current => -ISYN(Vpost,sSYNpre)
+ 

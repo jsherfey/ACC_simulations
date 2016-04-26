@@ -1,0 +1,12 @@
+% LTS passive leak from Kramer 08
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gleak = 6; % mS/cm^2
+Eleak = -65; % mV
+
+% Functions
+Ileak(X)=gleak.*(X-Eleak)
+
+% Linkers
+@current += -Ileak(X)
+

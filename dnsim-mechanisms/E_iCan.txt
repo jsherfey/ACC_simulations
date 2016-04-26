@@ -1,0 +1,14 @@
+gCan = [0.07]
+ECan = [-20]
+alphacan = [0.0056]
+betacan = [0.002]
+ 
+minf(cai) = alphacan*cai./(alphacan*cai+betacan)
+mtau(cai) = 1./(alphacan*cai+betacan)
+ICan(V,m) = gCan.*m.^2.*(V-ECan)
+ 
+mCan' = (minf(cai)-mCan)./mtau(cai);
+mCan(0) = rand(Npop,1)
+ 
+current => -ICan(V,mCan)
+ 

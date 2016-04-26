@@ -1,0 +1,24 @@
+sigonset = [50]
+sigspan = [0.25]
+sigamp = [15]
+sigoffset = [200]
+ninputs=2
+DUTY=50
+
+sigma = ceil(sigspan*Npop)
+%mask = circshift([ones(1,sigma) zeros(1,Npop-sigma)]',floor(Npop/2-sigma/2))
+mask = (square(2*pi*(ninputs/Npop)*((1:Npop)-(Npop/ninputs)*(DUTY/100)/2),DUTY)>0)';
+
+Ifocal(t) = sigamp*(t>sigonset & t<sigoffset).*mask
+ 
+current => Ifocal(t)
+
+
+
+% periodic spatial filters (square, gaussian) with time-window
+%mask1=square(2*pi*(ninputs/Npop)*((1:Npop)-(Npop/ninputs)*(DUTY/100)/2),DUTY)>0;
+%mask2=.5*(sin(2*pi*(ninputs/Npop)*((1:Npop)-(Npop/ninputs)*(DUTY/100)/2))+1);
+%figure; plot(mask1); hold on; plot(mask2); ylim([-2 2])
+%maskt = amp*mask1'*(t>=onset&t<=offset);
+%figure; imagesc(maskt)
+

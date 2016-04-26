@@ -1,0 +1,16 @@
+ek = [-80]
+gkca = [0.76]
+taumin = [0]
+b = [0.008]
+IC = [0]
+IC_noise = [0]
+ 
+minf(cai) = (cai/b)./((cai/b)+1)
+taum(cai) = taumin+b./(cai+b)
+ik(v,m) = gkca.*m.^2.*(v-ek)
+ 
+m' = (minf(caid1)-m)./taum(caid1);
+m(0) = IC+IC_noise.*rand(Npop,1)
+ 
+current => -ik(IN,m)
+ 

@@ -1,0 +1,12 @@
+% Nonspecific passive leak current
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gleak = .1; % mS/cm2
+Eleak = -65; % mV
+
+% Functions
+Ileak(X)=gleak.*(X-Eleak)
+
+% Linkers
+@current += -Ileak(X)
+

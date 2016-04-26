@@ -1,0 +1,25 @@
+% Voltage-independent, calcium-dependent Potassium AHP current (Ymada, Koch, and Adams, Methods in Neuronal Modeling, Chapter 4, p166)
+% Parameters
+gAHP = [0.054]
+EK = [-80]
+b = [2.5] % backward rate constant
+aAHP_scale=1 % scaling factor for the forward rate constant
+IC=0
+IC_noise=0
+
+% Functions
+%f(@cai) = aAHP_scale*1.25*10^8*@cai.^2 % forward rate constant
+%mtau(@cai) = 1000./f(@cai)+b
+am(@cai) = aAHP_scale*1.25*100*@cai.^2 % forward rate constant
+mtau(@cai) = 1000./am(@cai)+b
+minf(@cai) = am(@cai)./(am(@cai)+b)
+IAHP(X,m) = gAHP*m.^2.*(X-EK)
+
+% ODEs and ICs 
+m' = (minf(@cai)-m)./mtau(@cai)
+m(0) = IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IAHP(X,m)
+@iko += IAHP(X,m)
+

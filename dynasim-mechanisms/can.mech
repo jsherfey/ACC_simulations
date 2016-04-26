@@ -1,0 +1,31 @@
+% high-threshold calcium channel
+gcan = [0.0056]
+ki = [0.025]
+zetam = [-3.4]
+zetah = [2]
+vhalfmcan = [-21]
+vhalfhcan = [-40]
+tm0can = [1.5]
+th0can = [75]
+taumin = [2]
+celsius = [34]
+eca = [126.1]
+m_IC = [.1]
+h_IC = [.9]
+IC_noise = [0]
+ 
+alpm(X) = exp(1e-3*zetam*(X-vhalfmcan)*9.648e4/(8.315*(273.16+celsius)))
+alph(X) = exp(1e-3*zetah*(X-vhalfhcan)*9.648e4/(8.315*(273.16+celsius)))
+minf(X) = 1./(1+alpm(X))
+hinf(X) = 1./(1+alph(X))
+h2(@cai) = ki./(ki+@cai)
+ica(X,@cai,m,h) = gcan*m.^2.*h.*h2(@cai).*(X-eca)
+ 
+m' = (minf(X)-m)./tm0can;
+m(0) = m_IC+IC_noise.*rand(1,Npop)
+h' = (hinf(X)-h)./th0can;
+h(0) = h_IC+IC_noise.*rand(1,Npop)
+ 
+@current += -ica(X,@cai,m,h)
+@ica += ica(X,@cai,m,h)
+ 

@@ -1,0 +1,14 @@
+gNap = [0.6]
+ENap = [55]
+napshift = [5]
+ 
+alpha(V) = .001*exp((-85-V)/30)
+beta(V) = .0034./(exp((-17-V)/10)+1)
+minf(V) = 1./(1+exp(-(V+(55.7+napshift))/7.7))
+INap(V,h) = gNap*minf(V).^3.*h.*(V-ENap)
+ 
+hNap' = alpha(V).*(1-hNap)-beta(V).*hNap;
+hNap(0) = rand(Npop,1)
+ 
+current => -INap(V,hNap)
+ 

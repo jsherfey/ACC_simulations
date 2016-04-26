@@ -1,0 +1,6 @@
+%noise = [.1] 
+noise = unifrnd(0,2,[Npop 1]);
+noisefunc(t) = noise.*randn(Npop,1).*sqrt(dt)/dt
+current => noisefunc(t)
+
+

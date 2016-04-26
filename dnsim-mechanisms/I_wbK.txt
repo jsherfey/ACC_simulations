@@ -1,0 +1,15 @@
+wbgK = [10]
+wbEK = [-90]
+wbphi = [1]
+IC = [0.34]
+IC_noise = [0]
+ 
+an(V) = -.01*(V+34)./(exp(-.1*(V+34))-1)
+bn(V) = .125*exp(-(V+44)/80)
+IK(V,n) = wbgK.*n.^4.*(V-wbEK)
+ 
+n' = wbphi*(an(V).*(1-n)-bn(V).*n);
+n(0) = IC+IC_noise*rand(Npop,1)
+ 
+current => -IK(V,n)
+ 

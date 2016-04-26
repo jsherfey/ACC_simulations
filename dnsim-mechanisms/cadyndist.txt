@@ -1,0 +1,13 @@
+depth = [0.1]
+cainf = [5e-05]
+FARADAY = [96520]
+IC_noise = [0]
+ 
+%taurca = [28.5714] % [200]
+taurca = unifrnd(28.5714,57.1429,[Npop 1]);
+
+cai' = max(0,-(10000)*ica/(2*FARADAY*depth))/18+(cainf-cai)./taurca; %*7;
+cai(0) = .00005+IC_noise.*rand(Npop,1)
+ 
+cai => cai
+ 

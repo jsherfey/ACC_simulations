@@ -1,0 +1,22 @@
+% Delayed rectifier Potassium current (Durstewitz, Seamans, Sejnowski 2000; iDR) (Kdr in Poirazi 2013; DR in Durstewitz and Grabriel 2007)
+% an(V) multiplied by 3 to get faster repolarization seen in PFC (per Durstewitz 2002)
+gKDR=33.8; %4; 
+EK=-80; 
+IC=.1; IC_noise=0;
+akdr_scale=1;
+bkdr_scale=1;
+
+% Functions
+an(X)=akdr_scale*(-.018*(X-13)./(-1+exp(-(X-13)/25)))
+bn(X)=bkdr_scale*.0054*(X-23)./(-1+exp((X-23)/12))
+ninf(X)=an(X)./(an(X)+bn(X))
+ntau(X)=1./(an(X)+bn(X))
+IKDR(X,n)=gKDR.*n.^4.*(X-EK)
+
+% ODEs and ICs
+n'=(ninf(X)-n)./ntau(X)
+n(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IKDR(X,n)
+

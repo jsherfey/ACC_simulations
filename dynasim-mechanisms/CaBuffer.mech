@@ -1,0 +1,13 @@
+% Calcium buffer (Durstewitz, Seamans, Sejnowski 2000)
+taurCa=500
+taudCa=80
+CaRest = 50/1000; 	% umol/l, resting calcium concentration
+IC=.000001; IC_noise=0
+
+% ODEs and ICs
+cai' = max(0,-@ica)./taurCa+(CaRest-cai)./taudCa
+cai(0) = IC+IC_noise*rand(1,Npop)
+
+% Linkers
+@cai += cai
+

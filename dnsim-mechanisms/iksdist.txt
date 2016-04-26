@@ -1,0 +1,27 @@
+ek = [-80]
+a_IC = [0]
+b_IC = [1]
+IC_noise = [0]
+atau = [10]
+
+%gks = [0.285]
+gks = unifrnd(0,1,[Npop 1]);
+ 
+va(v) = v+34
+va2(v) = (abs(va(v))<1e-4).*(va(v)+1e-4)+(abs(va(v))>=1e-4).*(va(v))
+vb(v) = v+65
+vb2(v) = (abs(vb(v))<1e-4).*(vb(v)+1e-4)+(abs(vb(v))>=1e-4).*(vb(v))
+vd(v) = v+63.6
+vd2(v) = (abs(vd(v))<1e-4).*(vd(v)+1e-4)+(abs(vd(v))>=1e-4).*(vd(v))
+ainf(v) = 1./(1+exp(-va2(v)/6.5))
+binf(v) = 1./(1+exp(vb2(v)/6.6))
+btau(v) = 200+3200./(1+exp(-vd2(v)/4))
+ik(v,a,b) = gks.*a.*b.*(v-ek)
+ 
+a' = (ainf(IN)-a)/atau;
+a(0) = a_IC+IC_noise.*rand(Npop,1)
+b' = (binf(IN)-b)./btau(IN);
+b(0) = b_IC+IC_noise.*rand(Npop,1)
+ 
+current => -ik(IN,a,b)
+ 

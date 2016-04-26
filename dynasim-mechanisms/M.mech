@@ -1,0 +1,14 @@
+gM = [0.084]
+ek = [-80]
+IC=0
+IC_noise=0
+ 
+mtau(X) = 1000./(3.3*(exp((X+35)/40)+exp(-(X+35)/20)))
+minf(X) = 1./(1+exp(-(X+35)/10))
+IM(X,m) = gM*m.*(X-ek)
+ 
+m' = (minf(X)-m)./mtau(X)
+m(0) = IC+IC_noise.*rand(1,Npop)
+ 
+@current += -IM(X,m)
+ 

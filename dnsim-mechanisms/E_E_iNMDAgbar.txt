@@ -1,0 +1,30 @@
+g_NMDA = [4.5]
+E_NMDA = [0]
+Tmax = [0.001]
+Vpp = [2]
+Kp = [5]
+Mg0 = [1.5]
+IC = [0.1]
+IC_noise = [0.1]
+NtauD = [150]
+NMspan = [0.1]
+ 
+alphar = 7.2E4
+Nmax = max(Npre,Npost)
+Nmax = max(Npre,Npost)
+Xpre = linspace(1,Nmax,Npre)'*ones(1,Npost)
+Xpost = (linspace(1,Nmax,Npost)'*ones(1,Npre))'
+fanout = (NMspan*Nmax)/2
+kernel = exp(-(Xpre-Xpost).^2/fanout^2)
+mask = abs(Xpre-Xpost)<=fanout
+gbar = g_NMDA / mean(sum(mask,1))
+
+BMg(V) = 1./(1+exp(-.062*V)*Mg0/3.57)
+NT(V) = Tmax./(1+exp(-(V-Vpp)/Kp))
+INMDA(V,s) = gbar.*BMg(V).*(s'*(mask.*kernel))'.*(V-E_NMDA)
+ 
+sNMDApre' = alphar*NT(Vpre).*(1-sNMDApre)-sNMDApre/NtauD;
+sNMDApre(0) = IC+IC_noise*rand(Npre,1)
+ 
+current => -INMDA(Vpost,sNMDApre)
+ 

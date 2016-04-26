@@ -1,0 +1,35 @@
+% Persistent Sodium current (Durstewitz, Seamans, Sejnowski 2000; iNaP)
+
+gNaP=1; 
+ENa=55;  
+IC=.1; IC_noise=0;
+
+% Functions
+
+% 0% DA
+am(X)=(-.2816*(X+12))./(-1+exp(-(X+12)/9.3))
+bm(X)=(.2464*(X-15))./(-1+exp((X-15)/6))
+ah(X)=2.8e-5*exp(-(X+42.8477)/4.0248)
+bh(X)=.02./(1+exp(-(X-413.9284)/148.2589))
+% 100% DA
+%am(X)=(-.2816*(X+17))./(-1+exp((-X+17)/9.3))
+%bm(X)=(.2464*(X-10))./(-1+exp((X-10)/6))
+%ah(X)=2e-5*exp(-(X+42.8477)/4.0248)
+%bh(X)=.014286./(1+exp(-(X-413.9284)/148.2589))
+
+minf(X)=am(X)./(am(X)+bm(X))
+mtau(X)=1./(am(X)+bm(X))
+hinf(X)=ah(X)./(ah(X)+bh(X))
+htau(X)=1./(ah(X)+bh(X))
+
+INaP(X,m,h)=gNaP.*m.*h.*(X-ENa)
+
+% ODEs and ICs
+m'=(minf(X)-m)./mtau(X)
+h'=(hinf(X)-h)./htau(X)
+m(0)=IC+IC_noise.*rand(1,Npop)
+h(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -INaP(X,m,h)
+

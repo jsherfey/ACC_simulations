@@ -1,0 +1,26 @@
+% AMPA.txt
+g_SYN = [1.09]
+E_SYN = [0]
+tauDx = [2]
+tauRx = [0.083]
+IC = [0]
+IC_noise = [0]
+
+% connection parameters
+PrSYN=[1]
+normalize=[0];
+zerodiag=[0];
+ConnType=[1];
+  % 1: all-to-all
+  % 2: neighbors (distance<=(span*Npop))
+  % 3: gaussian (sigma=(span*Npop))
+span=[inf];
+netcon=WeightGenerator(Npre,Npost,ConnType,span,normalize,zerodiag,PrSYN)
+
+ISYN(V,s) = (g_SYN.*(netcon*s).*(V-E_SYN))
+
+%s' = -s./tauDx + ((1-s)/tauRx).*(1+tanh(IN/2));
+s' = -s./tauDx + ((1-s)/tauRx).*(1+tanh(IN/10));
+s(0) = IC+IC_noise.*rand(Npre,1)
+
+current => -ISYN(OUT,s)

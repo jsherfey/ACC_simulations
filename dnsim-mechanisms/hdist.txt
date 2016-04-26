@@ -1,0 +1,22 @@
+K = [10]
+vhalf = [-90]
+IC = [0]
+IC_noise = [0]
+
+%gh = [0.002]
+gh = unifrnd(0,2,[Npop 1]);
+%gh = unifrnd(0,1,[Npop 1]);
+
+%eh = [-10]
+eh = unifrnd(-30,-10,[Npop 1]);
+ 
+ninf(v) = 1-(1./(1+exp((vhalf-v)/K)))
+taun(v) = (v>-10).*(1) + (v<-10).*(2*(1./(exp((v+145)/-17.5)+exp((v+16.8)/16.5))+10))
+%taun(v) = 1.5*(exp(0.033*(v+75))./(0.011*(1+exp(0.083*(v+75)))));
+ih(v,n) = gh.*n.*(v-eh)
+ 
+n' = (ninf(IN)-n)./taun(IN)
+n(0) = IC+IC_noise.*rand(Npop,1)
+ 
+current => -ih(IN,n)
+ 

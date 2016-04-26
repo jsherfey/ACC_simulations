@@ -1,0 +1,24 @@
+% Fast BK calcium- and voltage-dependent C-type Potassium current (Durstewitz, Seamans, Sejnowski 2000; iC)
+
+% Parameters
+gKCa=1;
+EK=-80;
+IC=.1; IC_noise=0;
+akca_scale=1;
+bkca_scale=1;
+
+% Functions
+Vs(X,@cai)=X+40*log10(@cai)
+ac(X,@cai)=akca_scale.*(-.00642*Vs(X,@cai)-.1152)./(-1+exp(-(Vs(X,@cai)+18)/12))
+bc(X,@cai)=bkca_scale.*1.7*exp(-(Vs(X,@cai)+152)/30)
+cinf(X,@cai)=ac(X,@cai)./(ac(X,@cai)+bc(X,@cai))
+ctau(X,@cai)=1./(ac(X,@cai)+bc(X,@cai))
+IKCa(X,c)=gKCa.*c.^2.*(X-EK)
+
+% ODEs and ICs
+c'=(cinf(X,@cai)-c)./ctau(X,@cai)
+c(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IKCa(X,c)
+

@@ -1,0 +1,9 @@
+alphacaf = [0.002]
+tauca = [80]
+c0 = [0]
+ 
+cai' = alphacaf.*(-ICaf)-(cai-c0)/tauca;
+cai(0) = rand(Npop,1)
+ 
+cai => cai
+ 

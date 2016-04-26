@@ -1,0 +1,47 @@
+% Fast spike-generating Sodium current (Durstewitz, Seamans, Sejnowski 2000; iNa) (iNaf in Poirazi 2013; Na in Durstewitz & Gabriel 2007)
+gNaF=86; %50.25; 
+ENa=55;  
+IC=.1; IC_noise=0;
+mV1NaF=28
+mV2NaF=1
+hV1NaF=43.1 % 23.1
+hV2NaF=13.1 % 25.1
+amnaf_scale=1;
+bmnaf_scale=1;
+ahnaf_scale=1;
+bhnaf_scale=1;
+
+% Functions
+am(X)=amnaf_scale*(-.2816*(X+mV1NaF))./(-1+exp(-(X+mV1NaF)/9.3))
+bm(X)=bmnaf_scale*(.2464*(X+mV2NaF))./(-1+exp((X+mV2NaF)/6))
+ah(X)=ahnaf_scale*.098*exp(-(X+hV1NaF)/20)
+bh(X)=bhnaf_scale*1.4./(1+exp(-(X+hV2NaF)/10))
+
+minf(X)=am(X)./(am(X)+bm(X))
+mtau(X)=1./(am(X)+bm(X))
+hinf(X)=ah(X)./(ah(X)+bh(X))
+htau(X)=1./(ah(X)+bh(X))
+
+INaF(X,m,h)=gNaF.*m.^3.*h.*(X-ENa)
+
+% ODEs and ICs
+m'=(minf(X)-m)./mtau(X)
+h'=(hinf(X)-h)./htau(X)
+m(0)=IC+IC_noise.*rand(1,Npop)
+h(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -INaF(X,m,h)
+
+%ah(X)=.098*exp(-(X+23.1)/20)
+%bh(X)=1.4./(1+exp(-(X+25.1)/10))
+
+%amo(X)=(abs(X+28)<1e-4).*(1e-4)+(abs(X+28)>=1e-4).*0
+%bmo(X) = (abs(X+1)<1e-4).*(1e-4)+(abs(X+1)>=1e-4).*0
+%aho(X) = (abs(X+43.1)<1e-4).*(1e-4)+(abs(X+23.1)>=1e-4).*0  % 43.1 -> 23.1
+%bho(X) = (abs(X+13.1)<1e-4).*(1e-4)+(abs(X+25.1)>=1e-4).*0  % 13.1 -> 25.1
+%am(X)=(-.2816*(X+28+amo(X)))./(-1+exp(-(X+28+amo(X))/9.3))
+%bm(X)=(.2464*(X+1+bmo(X)))./(-1+exp((X+1+bmo(X))/6))
+%ah(X)=.098*exp(-(X+23.1+aho(X))/20) 			    % 43.1 -> 23.1
+%bh(X)=1.4./(1+exp(-(X+25.1+bho(X))/10))			    % 13.1 -> 25.1
+

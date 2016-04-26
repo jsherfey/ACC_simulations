@@ -1,0 +1,25 @@
+% T-type Calcium current (RD Traub, J Neurophysiol 89:909-921, 2003) (cat in Jones 2009)
+% source: https://senselab.med.yale.edu/ModelDB/ShowModel.cshtml?model=136803&file=/JonesEtAl2009/mod_files/cat.mod
+
+% Parameters
+gCaT=6
+ECa=125
+IC=.25; IC_noise=0
+
+% Functions
+minf(X)=1./(1+exp((-X-56)/6.2))
+mtau(X)=0.204+0.333./(exp((X+15.8)/18.2)+exp((-X-131)/16.7))
+hinf(X)=1./(1+exp((X+80)/4))
+htau(X)=(X<-81).*(0.333*exp((X+466)/66.6))+(X>=-81).*(9.32+0.333*exp((-X-21)/10.5))
+ICaT(X,m,h) = gCaT.*m.^2.*h.*(X-ECa)
+
+% ODEs and ICs
+m'=(minf(X)-m)./mtau(X)
+h'=(hinf(X)-h)./htau(X)
+m(0)=IC+IC_noise.*rand(1,Npop)
+h(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -ICaT(X,m,h)
+@ica += ICaT(X,m,h)
+

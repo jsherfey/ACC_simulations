@@ -1,0 +1,27 @@
+gnaf = [62.5]
+ena = [55]
+m_IC = [0]
+h_IC = [1]
+IC_noise = [0]
+ 
+mao(v) = (abs(v+28)<1e-4).*(1e-4)+(abs(v+28)>=1e-4).*0
+malf(v) = -0.2816*(v+28+mao(v))./(-1+exp(-(v+28+mao(v))/9.3))
+mbo(v) = (abs(v+1)<1e-4).*(1e-4)+(abs(v+1)>=1e-4).*0
+mbet(v) = 0.2464*(v+1+mbo(v))./(-1+exp((v+1+mbo(v))/6))
+hao(v) = (abs(v+43.1)<1e-4).*(1e-4)+(abs(v+43.1)>=1e-4).*0
+half(v) = 0.098./exp((v+23.1+hao(v))/20)
+hbo(v) = (abs(v+13.1)<1e-4).*(1e-4)+(abs(v+13.1)>=1e-4).*0
+hbet(v) = 1.4./(1+exp(-(v+25.1+hbo(v))/10))
+minf(v) = malf(v)./(malf(v)+mbet(v))
+taum(v) = 1./(malf(v)+mbet(v))
+hinf(v) = half(v)./(half(v)+hbet(v))
+tauh(v) = 1./(half(v)+hbet(v))
+ina(v,m,h) = gnaf.*m.^3.*h.*(v-ena)
+ 
+m' = (minf(IN)-m)./taum(IN);
+m(0) = m_IC+IC_noise.*rand(Npop,1)
+h' = (hinf(IN)-h)./tauh(IN);
+h(0) = h_IC+IC_noise.*rand(Npop,1)
+ 
+current => -ina(IN,m,h)
+ 

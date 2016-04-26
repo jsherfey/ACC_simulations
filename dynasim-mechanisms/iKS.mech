@@ -1,0 +1,23 @@
+% Slowly inactivating Potassium current (Durstewitz, Seamans, Sejnowski 2000; iKS) (D in Poirazi 2013; KS in Durstewitz and Grabriel 2007)
+
+% Parameters
+gKS=.24; 
+EK=-80; 
+IC=.1; IC_noise=0;
+
+% Functions
+ainf(X)=1./(1+exp(-(X+34)/6.5))
+atau(X)=10
+binf(X)=1./(1+exp((X+65)/6.6))
+btau(X)=200+(3200./(1+exp(-(X+63.6)/4)))
+IKS(X,a,b) = gKS.*a.*b.*(X-EK)
+
+% ODEs and ICs
+a'=(ainf(X)-a)./atau(X)
+b'=(binf(X)-b)./btau(X)
+a(0)=IC+IC_noise.*rand(1,Npop)
+b(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IKS(X,a,b)
+

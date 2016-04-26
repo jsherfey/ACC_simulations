@@ -1,0 +1,29 @@
+% iNMDA: NMDA-type synaptic current with magnesium block
+% parameters
+gNMDA = [0]		% mS/cm2, maximal conductance
+ENMDA = [0]		% mV, reversal potential
+tauNMDA = [150] 	% ms, decay time constant
+tauNMDAr = 1/(7.2E4) 	% ms, rise time constant
+Tmax = [0.001]
+Vpp = [2]
+Kp = [5]
+Mg0 = [1.5]
+IC = [0]
+IC_noise = [0.1]
+
+% fixed variables
+netcon = ones(N_pre,N_post) % default connectivity matrix (all-to-all)
+
+% functions
+BMg(X) = 1./(1+exp(-.062*X)*Mg0/3.57)		% magnesium block
+NT(X) = Tmax./(1+exp(-(X-Vpp)/Kp))
+INMDA(X,s) = gNMDA.*BMg(X).*(s*netcon).*(X-ENMDA)
+
+% ODEs and ICs
+s' = NT(X_pre).*(1-s)/tauNMDAr-s/tauNMDA
+s(0) = IC+IC_noise*rand(1,N_pre)
+
+monitor functions % always record the synaptic current
+
+% linkers
+@current += -INMDA(X_post,s)

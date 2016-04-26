@@ -1,0 +1,39 @@
+g_NMDA = [0]
+E_NMDA = [0]
+NtauD = [150]
+Tmax = [0.001]
+Vpp = [2]
+Kp = [5]
+Mg0 = [1.5]
+%alphar = 7.2E4
+NtauR = 1/(7.2E4)
+IC = [0]
+IC_noise = [0.1]
+PrSYN=1
+gvar=1
+
+% connection parameters
+PrSYN=[1]
+normalize=[0];
+zerodiag=[0];
+ConnType=[1];
+  % 1: all-to-all
+  % 2: neighbors (distance<=(span*Npop))
+  % 3: gaussian (sigma=(span*Npop))
+span=[inf];
+netcon=WeightGenerator(Npre,Npost,ConnType,span,normalize,zerodiag,PrSYN)
+
+%gbar = g_NMDA / mean(sum(mask,1))
+%MU = log(gbar^2 / sqrt(gvar+gbar^2))
+%SIGMA = sqrt(log(gvar/gbar^2 + 1))
+%gmax = lognrnd(MU,SIGMA,Npop,1)
+
+BMg(V) = 1./(1+exp(-.062*V)*Mg0/3.57)
+NT(V) = Tmax./(1+exp(-(V-Vpp)/Kp))
+INMDA(V,s) = g_NMDA.*BMg(V).*(netcon*s).*(V-E_NMDA)
+
+sNMDApre' = NT(Vpre).*(1-sNMDApre)/NtauR-sNMDApre/NtauD;
+%sNMDApre' = alphar*NT(Vpre).*(1-sNMDApre)-sNMDApre/NtauD;
+sNMDApre(0) = IC+IC_noise*rand(Npre,1)
+
+current => -INMDA(Vpost,sNMDApre)

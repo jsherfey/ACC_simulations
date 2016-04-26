@@ -1,0 +1,9 @@
+ECaf = [150]
+gCaf = [8.4883]
+ 
+minf(V) = 1./max(.001,(1+exp(-(V+20)/9)))
+ICaf(V) = gCaf*minf(V).^2.*(V-ECaf)
+ 
+current => -ICaf(V)
+ICaf => ICaf(V)
+ 

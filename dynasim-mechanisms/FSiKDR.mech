@@ -1,0 +1,21 @@
+% Delayed rectifier Potassium current for Fast Spiking interneuron (Durstewitz, Seamans, Sejnowski 2000; iDR) (Kdr in Poirazi 2013; DR in Durstewitz and Grabriel 2007)
+gKDR=40; 
+EK=-80; 
+IC=.1; IC_noise=0;
+akdr_scale=1;
+bkdr_scale=1;
+
+% Functions
+an(X)=akdr_scale*.3*exp((X+35)/10.67)
+bn(X)=bkdr_scale*.3*exp(-(X+35)/42.68)
+ninf(X)=an(X)./(an(X)+bn(X))
+ntau(X)=1./(an(X)+bn(X))
+IKDR(X,n)=gKDR.*n.^4.*(X-EK)
+
+% ODEs and ICs
+n'=(ninf(X)-n)./ntau(X)
+n(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IKDR(X,n)
+

@@ -1,0 +1,34 @@
+% Fast spike-generating Sodium current for Fast Spiking interneurons (Durstewitz, Seamans, Sejnowski 2000; iNa) (iNaf in Poirazi 2013; Na in Durstewitz & Gabriel 2007)
+gNaF=100; 
+ENa=55;  
+IC=.1; IC_noise=0;
+amVNaF=34.5
+bmVNaF=34.5
+ahVNaF=45
+bhVNaF=45
+amnaf_scale=1;
+bmnaf_scale=1;
+ahnaf_scale=1;
+bhnaf_scale=1;
+
+% Functions
+am(X)=amnaf_scale*4.2*exp((X+amVNaF)/11.57)
+bm(X)=bmnaf_scale*4.2*exp(-(X+bmVNaF)/27)
+ah(X)=ahnaf_scale*.09*exp(-(X+ahVNaF)/33)
+bh(X)=bhnaf_scale*.09*exp((X+bhVNaF)/12.2)
+
+minf(X)=am(X)./(am(X)+bm(X))
+mtau(X)=1./(am(X)+bm(X))
+hinf(X)=ah(X)./(ah(X)+bh(X))
+htau(X)=1./(ah(X)+bh(X))
+
+INaF(X,m,h)=gNaF.*m.^3.*h.*(X-ENa)
+
+% ODEs and ICs
+m'=(minf(X)-m)./mtau(X)
+h'=(hinf(X)-h)./htau(X)
+m(0)=IC+IC_noise.*rand(1,Npop)
+h(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -INaF(X,m,h)

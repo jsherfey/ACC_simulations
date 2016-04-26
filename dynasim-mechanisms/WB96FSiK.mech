@@ -1,0 +1,20 @@
+% K: delayed rectifier potassium current (ref: Wang-Buzsaki interneuron model, 1996)
+% Tags: potassium, channel, intrinsic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gK=9; % mS/cm2
+EK=-90; % mV
+wbphi=5; IC_noise=0; IC=0; % IC=.34;
+
+% Functions
+an(X)=-.01*(X+34)./(exp(-.1*(X+34))-1)
+bn(X)=.125*exp(-(X+44)/80)
+IK(X,n)=gK.*n.^4.*(X-EK)
+
+% ODEs
+n'=wbphi*(an(X).*(1-n)-bn(X).*n)
+n(0)=IC+IC_noise*rand(1,Npop)
+
+% Interface
+@current += -IK(X,n)
+

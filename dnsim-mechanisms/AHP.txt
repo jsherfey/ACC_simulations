@@ -1,0 +1,17 @@
+gAHP = [0.054]
+b = [2.5]
+ek = [-80]
+IC=0
+IC_noise=0
+
+f(cai) = 1.25*10^8*cai.^2
+mtau(cai) = 1000./f(cai)+b
+minf(cai) = f(cai)./(f(cai)+b)
+IAHP(v,m) = gAHP*m.^2.*(v-ek)
+ 
+m' = (minf(cai)-m)./mtau(cai)
+m(0) = IC+IC_noise.*rand(Npop,1)
+
+current => -IAHP(X,m)
+iko => IAHP(X,m)
+

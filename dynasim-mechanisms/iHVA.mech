@@ -1,0 +1,26 @@
+% High-voltage-activated Calcium current (Durstewitz, Seamans, Sejnowski 2000; iHVA)
+% Parameters
+gHVA=1; 	% .34 (PY soma); .7 (PY prox dend)
+cao=2; 		% extracellular calcium concentration
+IC=.1; 
+IC_noise=0;
+wtauHVA=420; % 420
+
+% Functions
+uinf(X)=1./(1+exp(-(X+24.6)/11.3))
+utau(X)=1.25*sech(-.031*(X+37.1))
+winf(X)=1./(1+exp((X+12.6)/18.9))
+wtau(X)=wtauHVA %420
+ECaHVA(@cai)=12.5*log(cao./@cai)
+IHVA(X,u,w,@cai)=gHVA.*u.^2.*w.*(X-ECaHVA(@cai))
+
+% ODEs and ICs
+u'=(uinf(X)-u)./utau(X)
+w'=(winf(X)-w)./wtau(X)
+u(0)=IC+IC_noise.*rand(1,Npop)
+w(0)=IC+IC_noise.*rand(1,Npop)
+
+% Linkers
+@current += -IHVA(X,u,w,@cai)
+@ica += IHVA(X,u,w,@cai)
+

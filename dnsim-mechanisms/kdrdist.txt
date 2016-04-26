@@ -1,0 +1,20 @@
+ek = [-80]
+IC = [0]
+IC_noise = [0]
+
+%gkdr = [6]
+gkdr = unifrnd(3,9,[Npop 1]);
+ 
+aoff(v) = (abs(v-13)<1e-4).*(1e-4)+(abs(v-13)>=1e-4).*0
+alf(v) = ((-0.018*(v-13+aoff(v)))./(-1+exp(-((v-13+aoff(v))/25))))
+boff(v) = (abs(v-23)<1e-4).*(1e-4)+(abs(v-23)>=1e-4).*0
+bet(v) = ((0.0054*(v-23+boff(v)))./(-1+exp((v-23+boff(v))/12)))
+ninf(v) = alf(v)./(alf(v)+bet(v))
+taun(v) = 1./(alf(v)+bet(v))
+ik(v,n) = gkdr.*n.^4.*(v-ek)
+ 
+n' = (ninf(IN)-n)./taun(IN);
+n(0) = IC+IC_noise.*rand(Npop,1)
+ 
+current => -ik(IN,n)
+ 

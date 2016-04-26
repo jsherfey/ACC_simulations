@@ -1,0 +1,11 @@
+depth = [0.1]
+taur = [200]
+cainf = [5e-05]
+FARADAY = [96520]
+IC_noise = [0]
+ 
+cai' = max(0,-(10000)*ica/(2*FARADAY*depth))/18+(cainf-cai)/taur*7;
+cai(0) = .00005+IC_noise.*rand(Npop,1)
+ 
+cai => cai
+ 

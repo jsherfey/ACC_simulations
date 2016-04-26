@@ -1,0 +1,10 @@
+%epas = [-66]
+epas = unifrnd(-90,-60,[Npop 1]);
+
+%gpas = [0.017]
+gpas = unifrnd(.04,.1,[Npop 1]);
+ 
+leak(IN) = gpas.*(IN-epas)
+ 
+current => -leak(IN)
+ 
