@@ -4,10 +4,11 @@
 load('rat-ACd-results/rat-ACd-model_cell-intrinsic-properties.mat','simdata','expdata');
 
 % select IPs to cluster
-sel=1:100;
+sel=1:length(simdata.RMP);%1:100;
 IP=[simdata.AHPtime2trough(sel) simdata.spikewidth(sel) simdata.threshrate(sel) simdata.RMP(sel) simdata.steprate(sel)];
-sel=1:84;
-IP=[expdata.AHPtime2trough(sel) expdata.spikewidth(sel) expdata.threshrate(sel) expdata.RMP(sel) expdata.steprate(sel)];
+% sel=1:84;
+% IP=[expdata.AHPtime2trough(sel) expdata.spikewidth(sel) expdata.threshrate(sel) expdata.RMP(sel) expdata.steprate(sel)];
+IPlabels=expdata.properties;
 
 % ---- CLUSTERING ---- %
 addpath /home/jason/projects/aro/analysis/clustering/salva-method
@@ -29,7 +30,7 @@ end
 type = 'Kmeans';
 datanorm4Cluster=IP;
 
-numClusters=2:6;
+numClusters=5;%2:6;
 visible='off';
 [labels,clustFilt,percElements] = function_pairingOfClusterElements(type,datanorm4Cluster,numClusters,visible,resultsdir);
 
@@ -61,7 +62,7 @@ imagesc(1:numMeasures,1:numNeurons,sortedData);
 colormap(1-gray); axis tight; %axis off; 
 for i=1:length(boundaries), hline(boundaries(i),'color','k','linewidth',3); end
 title(sprintf('boundaries=[%s] (%g%% clustered)',num2str(boundaries'),percElements(ClusterIndex)))
-set(gca,'xticklabel',IPlabels); colorbar; axis xy
+set(gca,'xtick',1:length(IPlabels),'xticklabel',IPlabels); colorbar; axis xy
 file = [resultsdir,'/custom_',type,num2str(numClust),'ClusteringResults_sortedHeatMap'];
 print(gcf,'-djpeg',file);
 print(gcf,'-depsc',file);
@@ -81,32 +82,32 @@ end
 disp('class boundaries and avg normalized IPs');
 binds,avgIPs
 
-cellIDs=IPs_id;
-fprintf('cluster_cell_ids={};\n');
-for i=1:nc
-  fprintf('cluster_cell_ids{%g} = [',i); 
-  ids=cellIDs(clustFilt{ClusterIndex,clustOrder(i)});
-  for j=1:length(ids)
-    fprintf('%g ',ids(j));
-  end
-  fprintf('];\n');
-end
-
-file = [resultsdir,'/',type,'_ClusteringResults_cluster_cell_indices'];
-fid=fopen(file,'a+');
-fprintf(fid,'%g clusters (%g%% cells clustered): IPs (%s) (%g cells)\n',numClust,percElements(ClusterIndex),ipstr,ncell);
-fprintf(fid,'cluster_cell_ids={};\n');
-for i=1:nc
-  fprintf(fid,'cluster_cell_ids{%g} = [',i); 
-  ids=cellIDs(clustFilt{ClusterIndex,clustOrder(i)});
-  for j=1:length(ids)
-    fprintf(fid,'%g ',ids(j));
-  end
-  fprintf(fid,'];\n');
-end
-fprintf(fid,'\n');
-fclose(fid);
-save([resultsdir,'/',type,num2str(numClust),'ClusteringResults.mat']);
+% cellIDs=IPs_id;
+% fprintf('cluster_cell_ids={};\n');
+% for i=1:nc
+%   fprintf('cluster_cell_ids{%g} = [',i); 
+%   ids=cellIDs(clustFilt{ClusterIndex,clustOrder(i)});
+%   for j=1:length(ids)
+%     fprintf('%g ',ids(j));
+%   end
+%   fprintf('];\n');
+% end
+% 
+% file = [resultsdir,'/',type,'_ClusteringResults_cluster_cell_indices'];
+% fid=fopen(file,'a+');
+% fprintf(fid,'%g clusters (%g%% cells clustered): IPs (%s) (%g cells)\n',numClust,percElements(ClusterIndex),ipstr,ncell);
+% fprintf(fid,'cluster_cell_ids={};\n');
+% for i=1:nc
+%   fprintf(fid,'cluster_cell_ids{%g} = [',i); 
+%   ids=cellIDs(clustFilt{ClusterIndex,clustOrder(i)});
+%   for j=1:length(ids)
+%     fprintf(fid,'%g ',ids(j));
+%   end
+%   fprintf(fid,'];\n');
+% end
+% fprintf(fid,'\n');
+% fclose(fid);
+% save([resultsdir,'/',type,num2str(numClust),'ClusteringResults.mat']);
 
 end
 
