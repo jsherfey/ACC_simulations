@@ -1,0 +1,26 @@
+% Slowly inactivating Potassium current (Durstewitz, Seamans, Sejnowski 2000; iKS) (D in Poirazi 2013; KS in Durstewitz and Grabriel 2007)
+gks = [0.285]
+EK = [-80]
+a_IC = [0]
+b_IC = [1]
+IC_noise = [0]
+atau = [10] % atau=10 in [DS00] and [PP13]; atau=6 in [DS02] and [DG06]
+ 
+va(X) = X+34
+va2(X) = (abs(va(X))<1e-4).*(va(X)+1e-4)+(abs(va(X))>=1e-4).*(va(X))
+vb(X) = X+65
+vb2(X) = (abs(vb(X))<1e-4).*(vb(X)+1e-4)+(abs(vb(X))>=1e-4).*(vb(X))
+vd(X) = X+63.6
+vd2(X) = (abs(vd(X))<1e-4).*(vd(X)+1e-4)+(abs(vd(X))>=1e-4).*(vd(X))
+ainf(X) = 1./(1+exp(-va2(X)/6.5))
+binf(X) = 1./(1+exp(vb2(X)/6.6))
+btau(X) = 200+3200./(1+exp(-vd2(X)/4))
+iks(X,a,b) = gks.*a.*b.*(X-EK)
+ 
+a' = (ainf(X)-a)/atau
+a(0) = a_IC+IC_noise.*rand(1,Npop)
+b' = (binf(X)-b)./btau(X)
+b(0) = b_IC+IC_noise.*rand(1,Npop)
+ 
+@current += -iks(X,a,b)
+ 

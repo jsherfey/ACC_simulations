@@ -1,0 +1,28 @@
+% low-threshold calcium channel
+gcat = [0.0056]
+zetam = [-3]
+zetah = [5.2]
+vhalfmcat = [-36]
+vhalfhcat = [-68]
+tm0cat = [1.5]
+th0cat = [10]
+celsius = [34]
+eca = [126.1]
+m_IC = [.1]
+h_IC = [.9]
+IC_noise = [0]
+ 
+alpm(X) = exp(1e-3*zetam*(X-vhalfmcat)*9.648e4/(8.315*(273.16+celsius)))
+alph(X) = exp(1e-3*zetah*(X-vhalfhcat)*9.648e4/(8.315*(273.16+celsius)))
+minf(X) = 1./(1+alpm(X))
+hinf(X) = 1./(1+alph(X))
+ica(X,@cai,m,h) = gcat.*m.^2.*h.*(X-eca)
+ 
+m' = (minf(X)-m)./tm0cat
+m(0) = m_IC+IC_noise.*rand(1,Npop)
+h' = (hinf(X)-h)./th0cat
+h(0) = h_IC+IC_noise.*rand(1,Npop)
+ 
+@current += -ica(X,@cai,m,h)
+@ica += ica(X,@cai,m,h)
+ 

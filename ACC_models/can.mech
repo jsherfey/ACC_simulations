@@ -19,7 +19,7 @@ alph(X) = exp(1e-3*zetah*(X-vhalfhcan)*9.648e4/(8.315*(273.16+celsius)))
 minf(X) = 1./(1+alpm(X))
 hinf(X) = 1./(1+alph(X))
 h2(@cai) = ki./(ki+@cai)
-ica(X,@cai,m,h) = gcan*m.^2.*h.*h2(@cai).*(X-eca)
+ica(X,@cai,m,h) = gcan.*m.^2.*h.*h2(@cai).*(X-eca)
  
 m' = (minf(X)-m)./tm0can
 m(0) = m_IC+IC_noise.*rand(1,Npop)

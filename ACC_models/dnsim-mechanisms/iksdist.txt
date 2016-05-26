@@ -1,3 +1,4 @@
+% Slowly inactivating Potassium current (Durstewitz, Seamans, Sejnowski 2000; iKS) (D in Poirazi 2013; KS in Durstewitz and Grabriel 2007)
 ek = [-80]
 a_IC = [0]
 b_IC = [1]

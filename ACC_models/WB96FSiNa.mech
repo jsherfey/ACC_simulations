@@ -1,0 +1,23 @@
+% Na: transient sodium current (ref: Wang-Buzsaki interneuron model, 1996)
+% Tags: sodium, channel, intrinsic
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Parameters
+gNa=35; % mS/cm2
+ENa=55; % mV
+wbphi=5; IC_noise=0; IC=0; % IC=.54;
+
+% Functions
+ah(X)=.07*exp(-(X+58)/20)
+bh(X)=1./(exp(-.1*(X+28))+1)
+am(X)=-.1*(X+35)./(exp(-.1*(X+35))-1)
+bm(X)=4*exp(-(X+60)/18)
+minf(X)=am(X)./(am(X)+bm(X))
+Xa(X,h)=gNa.*minf(X).^3.*h.*(X-ENa)
+
+% ODEs
+h'=wbphi*(ah(X).*(1-h)-bh(X).*h)
+h(0)=IC+IC_noise*rand(1,Npop)
+
+% Interface
+@current += -Xa(X,h)
+
