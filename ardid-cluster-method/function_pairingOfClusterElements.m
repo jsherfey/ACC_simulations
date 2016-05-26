@@ -88,30 +88,30 @@ for numClusters=numC
     reorderedSymPairwiseCluster=symrcm(symPairwiseClusterMod);
 
      if ind == 1
-       s=figure('color','none','visible',visible);
-       hold on
-       set(gca,'layer','top','color','none')
-       [cc1,hc1] =contourf(symPairwiseClusterMod);
-       set(hc1,'LineStyle','none');
-       colormap copper
-       set(gca,'fontSize',16,'LineWidth',1,'TickDir','out','Box','off')
-       %plot2svg([suffix,'/pairwise',num2str(numClusters),'clusterSparse_',type,'_final.svg']);
-       file=[suffix,'/pairwise',num2str(numClusters),'clusterSparse_',type,'_final'];
-       print(gcf,'-djpeg',file);
-       print(gcf,'-depsc',file);
+%        s=figure('color','none','visible',visible);
+%        hold on
+%        set(gca,'layer','top','color','none')
+%        [cc1,hc1] =contourf(symPairwiseClusterMod);
+%        set(hc1,'LineStyle','none');
+%        colormap copper
+%        set(gca,'fontSize',16,'LineWidth',1,'TickDir','out','Box','off')
+%        %plot2svg([suffix,'/pairwise',num2str(numClusters),'clusterSparse_',type,'_final.svg']);
+%        file=[suffix,'/pairwise',num2str(numClusters),'clusterSparse_',type,'_final'];
+%        print(gcf,'-djpeg',file);
+%        print(gcf,'-depsc',file);
      end
 
-     s=figure('color','none','visible',visible);
-     hold on
-     set(gca,'layer','top','color','none')
-     [cc2,hc2] = contourf(symPairwiseClusterMod(reorderedSymPairwiseCluster,reorderedSymPairwiseCluster));
-     set(hc2,'LineStyle','none');
-     colormap copper
-     set(gca,'fontSize',16,'LineWidth',1,'TickDir','out','Box','off')
-     %plot2svg([suffix,'/pairwise',num2str(numClusters),'clusterReordered_',type,'_final.svg']);
-%      file=[suffix,'/pairwise',num2str(numClusters),'clusterReordered_',type,'_final'];
-%      print(gcf,'-djpeg',file);
-%      print(gcf,'-depsc',file);
+%      s=figure('color','none','visible',visible);
+%      hold on
+%      set(gca,'layer','top','color','none')
+%      [cc2,hc2] = contourf(symPairwiseClusterMod(reorderedSymPairwiseCluster,reorderedSymPairwiseCluster));
+%      set(hc2,'LineStyle','none');
+%      colormap copper
+%      set(gca,'fontSize',16,'LineWidth',1,'TickDir','out','Box','off')
+%      %plot2svg([suffix,'/pairwise',num2str(numClusters),'clusterReordered_',type,'_final.svg']);
+% %      file=[suffix,'/pairwise',num2str(numClusters),'clusterReordered_',type,'_final'];
+% %      print(gcf,'-djpeg',file);
+% %      print(gcf,'-depsc',file);
 
     pairwiseClusterReordered=triu(symPairwiseClusterMod(reorderedSymPairwiseCluster,reorderedSymPairwiseCluster));
 

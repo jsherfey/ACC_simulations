@@ -1,6 +1,7 @@
 % Clustering IPs (simulated data)
 % -----------------------------------
 
+addpath ardid-cluster-method
 load('rat-ACd-results/rat-ACd-model_cell-intrinsic-properties.mat','simdata','expdata');
 
 % select IPs to cluster
@@ -11,9 +12,6 @@ IP=[simdata.AHPtime2trough(sel) simdata.spikewidth(sel) simdata.threshrate(sel) 
 IPlabels=expdata.properties;
 
 % ---- CLUSTERING ---- %
-addpath /home/jason/projects/aro/analysis/clustering/salva-method
-addpath /home/jason/projects/aro/analysis/clustering/plot2svg_20120915
-
 [ncell,nmet]=size(IP);
 resultsdir='sim_clusters';
 mkdir(resultsdir);
@@ -30,14 +28,16 @@ end
 type = 'Kmeans';
 datanorm4Cluster=IP;
 
-numClusters=5;%2:6;
-visible='off';
+numClusters=6;%2:6;
+visible='on';
+tic
 [labels,clustFilt,percElements] = function_pairingOfClusterElements(type,datanorm4Cluster,numClusters,visible,resultsdir);
+toc
 
 disp('num clusters and percent cells clustered');
 numClusters,percElements
 
-for nc=5%numClusters%4:6 % number of clusters
+for nc=numClusters%4:6 % number of clusters
 
 celltype=repmat({'broad'},[1 ncell]);
 visible='on';
@@ -60,12 +60,12 @@ main_clustering_heatMaps;
 figure
 imagesc(1:numMeasures,1:numNeurons,sortedData);
 colormap(1-gray); axis tight; %axis off; 
-for i=1:length(boundaries), hline(boundaries(i),'color','k','linewidth',3); end
+try for i=1:length(boundaries), hline(boundaries(i),'color','k','linewidth',3); end; end
 title(sprintf('boundaries=[%s] (%g%% clustered)',num2str(boundaries'),percElements(ClusterIndex)))
 set(gca,'xtick',1:length(IPlabels),'xticklabel',IPlabels); colorbar; axis xy
 file = [resultsdir,'/custom_',type,num2str(numClust),'ClusteringResults_sortedHeatMap'];
-print(gcf,'-djpeg',file);
-print(gcf,'-depsc',file);
+% print(gcf,'-djpeg',file);
+% print(gcf,'-depsc',file);
 
 disp('cumulative explained variance and sorted IP list');
 IPlabels
@@ -111,3 +111,4 @@ binds,avgIPs
 
 end
 
+% save simdata_6clusters.mat

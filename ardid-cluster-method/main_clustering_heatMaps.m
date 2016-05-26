@@ -103,7 +103,7 @@ figure('visible',visible)
 hold on
 imagesc(1:numMeasures,1:numNeurons,sortedData);
 colormap(map); axis tight; %axis off; 
-for i=1:length(boundaries), hline(boundaries(i),'color','k','linewidth',3); end
+try for i=1:length(boundaries), hline(boundaries(i),'color','k','linewidth',3); end; end
 title(['boundaries=[' num2str(boundaries') ']'])
 set(gca,'xticklabel',IPlabels); colorbar
 file = [resultsdir,'/',type,num2str(numClust),'ClusteringResults_sortedHeatMap'];
